@@ -28,77 +28,8 @@ app.use(cors());
 app.use(logger("combined"));
 app.use(express.json());
 
-app.get("/users", async function (req, res, next) {
-  const users = await appDataSource.query(`
-    SELECT
-      id,
-      name,
-      email,
-      profile_image,
-      password,
-      phone_number,
-      created_at,
-      updated_at
-    FROM users
-  `);
-  res.json({ data: users });
-});
-
-app.post("/users", async function (req, res, next) {
-  console.log(req.body);
-  const { name, email, password, phone_number } = req.body;
-
-  await appDataSource.query(
-    `
-    INSERT INTO users(
-    
-      name,
-      email,
-      password,
-      phone_number
-    ) VALUES (
-      ?,
-      ?,
-      ?,
-      ?
-    )
-  `,
-    [name, email, password, phone_number]
-  );
-  res.json({ message: "SUCCESS_CREATE_USER" });
-});
-
-app.get("/posts", async function (req, res, next) {
-  const users = await appDataSource.query(`
-      SELECT
-      id,
-      content,
-      users_id,
-      created_at,
-      updated_at
-      FROM posts
-    `);
-  res.json({ data: posts });
-});
-
-app.post("/posts", async function (req, res, next) {
-  console.log(req.body);
-  const { content, user_id } = req.body;
-
-  await appDataSource.query(
-    `
-      INSERT INTO posts(
-      
-        content,
-        user_id
-      ) VALUES (
-        ?,
-        ?
-      )
-    `,
-    [content, user_id]
-  );
-  res.json({ message: "SUCCESS_CREATE_POST" });
+app.get("/ping", function (req, res, next) {
+  res.json({ message: "ping" });
 });
 
 app.listen(3000, function () {
