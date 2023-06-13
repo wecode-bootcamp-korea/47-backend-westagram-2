@@ -15,20 +15,21 @@ const appDataSource = new DataSource({
   database: process.env.DB_DATABASE,
 });
 
-appDataSource.initialize().then(() => {
-  console.log("Data Source has been initialized!");
-});
+appDataSource
+  .initialize()
+  .then(() => {
+    console.log("Data Source has been initialized!");
+  })
+  .catch((err) => {
+    console.error("Error during Data Source initialization:", err);
+  });
 
 app.use(cors());
 app.use(logger("combined"));
-app.use(express.json);
+app.use(express.json());
 
 app.get("/ping", function (req, res, next) {
   res.json({ message: "ping" });
-});
-
-app.post("/pong", function (req, res, next) {
-  res.json({ message: "pong" });
 });
 
 app.listen(3000, function () {
