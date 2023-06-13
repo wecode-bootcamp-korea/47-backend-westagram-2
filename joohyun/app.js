@@ -68,6 +68,39 @@ app.post("/users", async function (req, res, next) {
   res.json({ message: "SUCCESS_CREATE_USER" });
 });
 
+app.get("/posts", async function (req, res, next) {
+  const users = await appDataSource.query(`
+      SELECT
+      id,
+      content,
+      users_id,
+      created_at,
+      updated_at
+      FROM posts
+    `);
+  res.json({ data: posts });
+});
+
+app.post("/posts", async function (req, res, next) {
+  console.log(req.body);
+  const { content, user_id } = req.body;
+
+  await appDataSource.query(
+    `
+      INSERT INTO posts(
+      
+        content,
+        user_id
+      ) VALUES (
+        ?,
+        ?
+      )
+    `,
+    [content, user_id]
+  );
+  res.json({ message: "SUCCESS_CREATE_POST" });
+});
+
 app.listen(3000, function () {
   console.log("server listening on port 3000");
 });
