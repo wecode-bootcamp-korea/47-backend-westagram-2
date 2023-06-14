@@ -32,6 +32,48 @@ app.get("/ping", function (req, res, next) {
   res.json({ message: "ping" });
 });
 
+app.get("/users", async function (req, res, next) {
+  const users = await appDataSource.query(
+    `
+    SELECT
+      id,
+      name,
+      email,
+      profile_image,
+      password,
+      phone_number,
+      created_at,
+      updated_at
+    FROM users
+  `
+  );
+  res.json({ data: users });
+});
+
+app.post("/users", async function (req, res, next) {
+  console.log(req.body);
+  const { name, email, password, phone_number } = req.body;
+
+  await appDataSource.query(
+    `
+    INSERT INTO users(
+    
+      name,
+      email,
+      password,
+      phone_number
+    ) VALUES (
+      ?,
+      ?,
+      ?,
+      ?
+    )
+  `,
+    [name, email, password, phone_number]
+  );
+  res.json({ message: "SUCCESS_CREATE_USER" });
+});
+
 app.listen(3000, function () {
   console.log("server listening on port 3000");
 });
