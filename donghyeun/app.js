@@ -28,26 +28,42 @@ app.use(cors());
 app.use(logger("combined"));
 app.use(express.json());
 
-app.post("/users", async (req, res) => {
-  const { email, name, password, phoneNumber } = req.body;
+app.get("/posts", async (req, res) => {
+  const posts = await appDataSource.query(
+    `
+            SELECT
+                user_id,
+                title,
+                content,
+                imageurl
+            FROM posts
+          `
+  );
+  res.json({ data: posts });
+});
+
+// 게시물 등록
+app.post("/posts", async (req, res) => {
+  console.log(req.body);
+  const { userid, title, content, imageurl } = req.body;
 
   await appDataSource.query(
     `
-        INSERT INTO users(
-          email,
-          name,
-          password,
-          phone_number
-        ) VALUES (
-          ?,
-          ?,
-          ?,
-          ?
-        )
-      `,
-    [email, name, password, phoneNumber]
+            INSERT INTO posts(
+                user_id,
+                title,
+                content,
+                imageurl
+            ) VALUES (
+                ?,
+                ?,
+                ?,
+                ?
+            )
+        `,
+    [userid, title, content, imageurl]
   );
-  res.status(201).json({ message: "userCreated" });
+  res.status(201).json({ message: "postCreated" });
 });
 
 app.listen(3000, function () {
