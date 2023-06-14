@@ -28,8 +28,44 @@ app.use(cors());
 app.use(logger("combined"));
 app.use(express.json());
 
-app.get("/ping", function (req, res, next) {
-  res.json({ message: "ping" });
+// SELECT id, email, name, nickname, password, phone_number FROM users;
+app.get("/users", async (req, res, next) => {
+  const users = await appDataSource.query(`
+        SELECT
+          id,
+          email,
+          name,
+          password,
+          phone_number,
+          created_at,
+          updated_at
+        FROM users
+      `);
+  res.json({ data: users });
+});
+
+// INSERT INTO users(email, name, nickname, password) VALUES (?, ?, ?, ?);
+app.post("/users", async (req, res, next) => {
+  console.log(req.body);
+  const { email, name, password, phone_number } = req.body;
+
+  await appDataSource.query(
+    `
+        INSERT INTO users(
+          email,
+          name,
+          password,
+          phone_number
+        ) VALUES (
+          ?,
+          ?,
+          ?,
+          ?
+        )
+      `,
+    [email, name, password, phone_number]
+  );
+  res.json({ message: "userCreated" });
 });
 
 app.listen(3000, function () {
