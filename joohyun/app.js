@@ -28,31 +28,27 @@ app.use(cors());
 app.use(logger("combined"));
 app.use(express.json());
 
-app.get("/ping", function (req, res, next) {
+app.get("/ping", function (req, res) {
   res.json({ message: "ping" });
 });
 
-app.get("/users", async function (req, res, next) {
+app.get("/users", async function (req, res) {
   const users = await appDataSource.query(
     `
     SELECT
       id,
       name,
       email,
-      profile_image,
       password,
-      phone_number,
-      created_at,
-      updated_at
+      phone_number
     FROM users
   `
   );
   res.json({ data: users });
 });
 
-app.post("/users", async function (req, res, next) {
-  console.log(req.body);
-  const { name, email, password, phone_number } = req.body;
+app.post("/users", async function (req, res) {
+  const { name, email, profileImage, password, phoneNumber } = req.body;
 
   await appDataSource.query(
     `
@@ -60,18 +56,20 @@ app.post("/users", async function (req, res, next) {
     
       name,
       email,
+      profile_image,
       password,
       phone_number
     ) VALUES (
       ?,
       ?,
       ?,
+      ?,
       ?
     )
   `,
-    [name, email, password, phone_number]
+    [name, email, profileImage, password, phoneNumber]
   );
-  res.json({ message: "SUCCESS_CREATE_USER" });
+  res.status(201).json({ message: "SUCCESS_CREATE_USER" });
 });
 
 app.listen(3000, function () {
