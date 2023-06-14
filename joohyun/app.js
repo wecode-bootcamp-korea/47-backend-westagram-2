@@ -32,21 +32,6 @@ app.get("/ping", function (req, res) {
   res.json({ message: "ping" });
 });
 
-app.get("/users", async function (req, res) {
-  const users = await appDataSource.query(
-    `
-    SELECT
-      id,
-      name,
-      email,
-      password,
-      phone_number
-    FROM users
-  `
-  );
-  res.json({ data: users });
-});
-
 app.post("/users", async function (req, res) {
   const { name, email, profileImage, password, phoneNumber } = req.body;
 
