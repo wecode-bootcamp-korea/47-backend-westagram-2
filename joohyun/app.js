@@ -49,6 +49,8 @@ app.post("/posts", async function (req, res) {
   );
 });
 res.json({ message: "SUCCESS_CREATE_POST" });
+
+
 app.listen(3000, function () {
   console.log("server listening on port 3000");
 });
