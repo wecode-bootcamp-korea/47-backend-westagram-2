@@ -1,11 +1,11 @@
 -- migrate:up
-CREATE TABLE messages (
+CREATE TABLE posts (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    author_id VARCHAR(20) NOT NULL,
-    author_message VARCHAR(1000) NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    user_id INT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (author_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- migrate:down

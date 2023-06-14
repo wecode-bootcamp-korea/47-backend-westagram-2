@@ -1,11 +1,10 @@
 -- migrate:up
 CREATE TABLE users (
-    user_id VARCHAR(20) NOT NULL PRIMARY KEY,
-    pw INT NOT NULL,
-    pwcheck INT NOT NULL,
-    user_name VARCHAR(20) NOT NULL,
-    phonenumber INT NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    id INT NOT NULL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    profile_image VARCHAR(1000) NULL,
+    password VARCHAR(200) NOT NULL,
+    pwcheck VARCHAR(200) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

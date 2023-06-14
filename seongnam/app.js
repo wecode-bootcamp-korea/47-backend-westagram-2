@@ -36,22 +36,18 @@ try{
     const data = req.body;
     console.log(data)
     const insertQuery = `INSERT INTO users (
-        user_id,
-        pw,
-        pwcheck,
-        user_name,
-        phonenumber,
-        email 
+        id,
+        name,
+        password,
+        pwcheck
         ) 
     VALUES (
-        "${data.user_id}", 
-        ${data.pw}, 
-        ${data.pwcheck},
-        "${data.user_name}",
-        ${data.phonenumber},
-        "${data.email}"
+        ${data.id},
+        "${data.name}", 
+        "${data.password}",
+        "${data.pwcheck}"
     )`;
-    if(data.pw == data.pwcheck){
+    if(data.password == data.pwcheck){
         await appDataSource.query(insertQuery);
         res.status(201).json({message : "UserCreated"});
     }else{
@@ -63,33 +59,32 @@ try{
     }
 })
 
-app.post("/write",async(req,res) =>{
-    try{
-        const data = req.body;
-        console.log(data)
-        const insertQuery = `INSERT INTO messages (
-            author_id,
-            author_message
-            ) 
-        VALUES (
-            "${data.author_id}", 
-            "${data.author_message}" 
-        )`;
-        if(
-            await appDataSource.query(`
-            SELECT EXISTS(SELECT 1 FROM users WHERE user_id = '${data.author_id}' )
-            `) != "Empty set"
-        ){
-            await appDataSource.query(insertQuery);
-            res.status(201).json({message : "postCreated"});
-        }else{
-            res.status(201).json({message : "user_id is not exists"});
-        }
-        }catch(error){
-            console.error("Error executing SQL query:", error);
-            res.status(500).json({ message: "Error saving data" });
-        }
-    })
+// app.post("/write",async(req,res) =>{
+//     try{
+//         const data = req.body;
+//         console.log(data)
+//         const insertQuery = `INSERT INTO messages (
+//             author_id,
+//             author_message
+//             ) 
+//         VALUES (
+//             "${data.author_id}", 
+//             "${data.author_message}" 
+//         )`;
+//         if(
+//             await appDataSource.query(`
+//             SELECT EXISTS(SELECT 1 FROM users WHERE user_id = '${data.author_id}')
+//             `){
+//             await appDataSource.query(insertQuery);
+//             res.status(201).json({message : "postCreated"});
+//         }else{
+//             res.status(201).json({message : "user_id is not exists"});
+//         }
+//         }catch(error){
+//             console.error("Error executing SQL query:", error);
+//             res.status(500).json({ message: "Error saving data" });
+//         }
+//     })
 
 app.listen(3000, function () {
     'listening on port 3000'
