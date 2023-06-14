@@ -28,8 +28,33 @@ app.use(cors());
 app.use(logger("combined"));
 app.use(express.json());
 
-app.get("/ping", function (req, res, next) {
+app.get("/ping", function (req, res) {
   res.json({ message: "ping" });
+});
+
+app.post("/users", async function (req, res) {
+  const { name, email, profileImage, password, phoneNumber } = req.body;
+
+  await appDataSource.query(
+    `
+    INSERT INTO users(
+    
+      name,
+      email,
+      profile_image,
+      password,
+      phone_number
+    ) VALUES (
+      ?,
+      ?,
+      ?,
+      ?,
+      ?
+    )
+  `,
+    [name, email, profileImage, password, phoneNumber]
+  );
+  res.status(201).json({ message: "SUCCESS_CREATE_USER" });
 });
 
 app.listen(3000, function () {
