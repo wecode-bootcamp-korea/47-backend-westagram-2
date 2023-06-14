@@ -31,7 +31,24 @@ app.use(express.json());
 app.get("/ping", function (req, res, next) {
   res.json({ message: "ping" });
 });
+app.post("/posts", async function (req, res) {
+  console.log(req.body);
+  const { content, user_id } = req.body;
+  await appDataSource.query(
+    `
+        INSERT INTO posts(
 
+        content,
+        user_id
+      ) VALUES (
+        ?,
+        ?
+      )
+    `,
+    [content, user_id]
+  );
+});
+res.json({ message: "SUCCESS_CREATE_POST" });
 app.listen(3000, function () {
   console.log("server listening on port 3000");
 });
