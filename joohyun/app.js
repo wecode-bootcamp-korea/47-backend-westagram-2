@@ -57,6 +57,21 @@ app.post("/users", async function (req, res) {
   res.status(201).json({ message: "SUCCESS_CREATE_USER" });
 });
 
+app.put("/modifyPost/:id", async (req, res) => {
+  const postID = req.params.id;
+  const { title, content } = req.body;
+  await appDataSource.query(
+    `
+   UPDATE posts
+   SET 
+  title = ?,
+  content = ?
+  WHERE id = ?;`,
+    [title, content, postID]
+  );
+  res.status(200).json({ message: "SUCCESS_MODIFY_POST" });
+});
+
 app.listen(3000, function () {
   console.log("server listening on port 3000");
 });
