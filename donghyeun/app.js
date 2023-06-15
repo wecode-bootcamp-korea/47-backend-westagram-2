@@ -62,6 +62,24 @@ app.delete("/posts/delete/:postId", async (req, res) => {
   res.status(204).json({ message: "postingDeleted" });
 });
 
+app.post("/posts/likes/:postId", async (req, res) => {
+  const { postId } = req.params;
+  const { userId } = req.body;
+  await appDataSource.query(
+    `
+  INSERT INTO likes(
+    user_id
+    , post_id
+  ) VALUES (
+    ?,
+    ${postId}
+  );
+  `,
+    [userId]
+  );
+  res.status(201).json({ message: "likeCreated" });
+});
+
 app.listen(3000, () => {
   console.log("server listening on port 3000");
 });
