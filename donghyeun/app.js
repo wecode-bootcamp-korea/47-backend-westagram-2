@@ -53,6 +53,15 @@ app.patch("/modifyPost/:postId", async (req, res) => {
   res.status(201).json({ data: modifyPost });
 });
 
+app.delete("/posts/delete/:postId", async (req, res) => {
+  const { postId } = req.params;
+  await appDataSource.query(`
+    DELETE FROM posts
+    WHERE posts.id = ${postId}
+  `);
+  res.status(204).json({ message: "postingDeleted" });
+});
+
 app.listen(3000, () => {
   console.log("server listening on port 3000");
 });
