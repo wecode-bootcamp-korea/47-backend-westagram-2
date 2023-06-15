@@ -121,9 +121,54 @@ app.get("/userdata", async(req,res) => {
         res.status(500).json({ message: "Error saving data" });
     }
 })
+app.get("/:userid/:postid", async(req,res) => {
+    try{
+    const userid = req.params.userid;
+    const postid = req.params.postid;
 
+    const result = await appDataSource.query(`
+    select * from posts where posts.user_id = ? and posts.id = ?;
+    `,[userid,postid]);
+    res.status(201).json(result);
+    }catch(error){
+        console.error("Error SQL query:", error);
+        res.status(500).json({ message: "Error saving data" });
+    }
+})
 
-
+app.post("/postDel",async(req,res) =>{
+    try{
+    const data = req.body;
+    const result = await appDataSource.query(
+        `
+        DELETE FROM posts WHERE user_id = ? AND id = ?;
+        `,[data.id, data.postid]);
+        res.status(201).json("posting Deleted");
+    }catch(error){
+        console.error("Error SQL query:", error);
+        res.status(500).json({ message: "Error saving data" });
+    }
+})
+app.post("/likes", async(req,res) => {
+    try{
+        const data = req.body;
+        const result = await appDataSource.query(
+        `
+        INSERT INTO likes (
+            user_id,
+            post_id
+            ) 
+        VALUES (
+            ?, 
+            ?
+        )
+        `,[data.user_id, data.post_id]);
+        res.status(201).json("likeCreated");
+    }catch(error){
+        console.error("Error SQL query:", error);
+        res.status(500).json({ message: "Error saving data" });
+    }
+})
 
 app.listen(3000, function () {
     'listening on port 3000'
