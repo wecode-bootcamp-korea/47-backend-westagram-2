@@ -60,11 +60,28 @@ app.get("/viewAllPosts", async (req, res) => {
               , posts.id postingId
               , posts.imageurl postingImageUrl
               , posts.content postingContent
-              FROM users
-              JOIN posts
+              FROM users, posts
               WHERE users.id = posts.user_id;
           `);
   res.json({ data: viewAllPosts });
+});
+
+// 유저 게시물 조회
+app.get("/viewUserPosts", async (req, res) => {
+  const viewUserPosts = await appDataSource.query(`
+              SELECT users.id userId 
+              , users.profile_image userProfileImage
+              , JSON_ARRAY (
+                JSON_OBJECT (
+                    'postingId', posts.id
+                    , 'postingImageUrl', posts.imageurl
+                    , 'postingContent', posts.content
+                )
+              ) postings
+              FROM users
+              JOIN posts ON users.id = posts.user_id;
+          `);
+  const users = res.json({ data: viewUserPosts });
 });
 
 app.listen(3000, function () {
