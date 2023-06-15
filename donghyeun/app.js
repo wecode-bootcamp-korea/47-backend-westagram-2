@@ -28,16 +28,16 @@ app.use(cors());
 app.use(logger("combined"));
 app.use(express.json());
 
-app.patch("/modifyPost/:postId", async (req, res) => {
+app.patch("/posts/modify/:postId", async (req, res) => {
   const { content, userId } = req.body;
   const { postId } = req.params;
   await appDataSource.query(
     `
     UPDATE posts
     SET content = ?
-    WHERE user_id = ? AND id = ? ;
+    WHERE user_id = ? AND id = ${postId} ;
   `,
-    [content, userId, postId]
+    [content, userId]
   );
   const modifyPost = await appDataSource.query(`
     SELECT users.id userId
