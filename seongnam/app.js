@@ -5,6 +5,7 @@ const dotenv = require("dotenv")
 dotenv.config()
 
 const { DataSource } = require('typeorm');
+const { createConnection } = require('mysql2')
 const appDataSource = new DataSource({
     type: process.env.TYPEORM_CONNECTION,
     host: process.env.TYPEORM_HOST,
@@ -29,33 +30,32 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
-app.post("/join",async(req,res) =>{
+app.post("/join", async(req,res) =>{
     try{
         const data = req.body;
         console.log(data)
         const insertQuery = `INSERT INTO users (
-            id,
             name,
-            password,
-            pwcheck
+            password
             ) 
         VALUES (
-            ${data.id},
-            "${data.name}", 
-            "${data.password}",
-            "${data.pwcheck}"
+            ?, 
+            ?
         )`;
-        if(data.password == data.pwcheck){
-            await appDataSource.query(insertQuery);
-            res.status(201).json({message : "UserCreated"});
-        }else{
-            res.status(201).json({message : "pw and pwcheck is not same"});
-        }
-        }catch(error){
-            console.error("Error executing SQL query:", error);
-            res.status(500).json({ message: "Error saving data" });
-        }
-    })
+        const appData = [ data.name, data.password ];
+        const result = await appDataSource.query(insertQuery, appData)       
+        .then((result) => {
+                console.log('Query executed successfully:',result);
+            })
+            .catch((error)=>{
+                console.error('Error executing SQL query:',error);
+            });
+        res.status(201).json(result);
+    }catch(error){
+        console.error("Error executing SQL query:", error);
+        res.status(500).json({ message: "Error saving data" });
+    }
+})
 
 app.listen(3000, function () {
     'listening on port 3000'
