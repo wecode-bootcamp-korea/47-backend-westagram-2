@@ -34,11 +34,9 @@ app.get("/ping", function (req, res) {
 
 app.post("/users", async function (req, res) {
   const { name, email, profileImage, password, phoneNumber } = req.body;
-
   await appDataSource.query(
     `
-    INSERT INTO users(
-    
+    INSERT INTO users( 
       name,
       email,
       profile_image,
@@ -57,42 +55,39 @@ app.post("/users", async function (req, res) {
   res.status(201).json({ message: "SUCCESS_CREATE_USER" });
 });
 
-app.post("/posts", async function (req, res) {
+app.post("/posts", async (req, res) => {
   const { content, user_id } = req.body;
   await appDataSource.query(
     `
         INSERT INTO posts(
-
         content,
         user_id
       ) VALUES (
         ?,
         ?
-      )
-    `,
+      )`,
     [content, user_id]
   );
   res.status(201).json({ message: "SUCCESS_CREATE_POST" });
 });
 
-app.get("/guest", async function (req, res) {
-  const guest = await appDataSource.query(`
-      SELECT
-      
+app.get("/getAllPosts", async (req, res) => {
+  const getAllPosts = await appDataSource.query(`
+      SELECT     
       users.id,
       users.profile_image AS userProfileImage,
       posts.id AS postingId,
       posts.post_image_url AS postingImageUrl,
-      posts.content AS postingContent
-      
+      posts.content AS postingContent      
       FROM users, posts
-      WHERE users.id = posts.id
-    `);
-  res.status(200).json({ data: guest });
+      WHERE users.id = posts.user_id`);
+  res.status(200).json({ data: getAllPosts });
 });
 
-app.get("/userposts", async function (req, res) {
-  const userposts = await appDataSource.query(`
+app.get("/getPostsByUserId/:id", async (req, res) => {
+  const userId = req.params.id;
+  const getPostsByUserId = await appDataSource.query(
+    `
       SELECT
       users.id AS userId,
       users.profile_image AS userProfileImage,
@@ -108,11 +103,12 @@ app.get("/userposts", async function (req, res) {
     JOIN
       posts ON users.id = posts.user_id
     WHERE
-      users.id = 1;
-        `);
-
-  res.status(200).json({ data: userposts });
+      users.id = ?;`,
+    [userId]
+  );
+  res.status(200).json({ data: getPostsByUserId });
 });
+
 app.listen(3000, function () {
   console.log("server listening on port 3000");
 });
