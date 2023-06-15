@@ -45,8 +45,7 @@ app.post("/posts", async (req, res) => {
                 ?,
                 ?,
                 ?
-            )
-        `,
+            )`,
     [userid, title, content, imageurl]
   );
   res.status(201).json({ message: "postCreated" });
@@ -84,6 +83,6 @@ app.get("/viewUserPosts", async (req, res) => {
   const users = res.json({ data: viewUserPosts });
 });
 
-app.listen(3000, function () {
+app.listen(3000, () => {
   console.log("server listening on port 3000");
 });
