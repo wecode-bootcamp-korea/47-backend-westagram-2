@@ -416,4 +416,4 @@ zsdoc/data
 # End of https://www.toptal.com/developers/gitignore/api/database,visualstudiocode,vim,webstorm,linux,macos,windows,zsh,node
 
 #schema.sql 무시
-schema.sql
+./schema.sql
