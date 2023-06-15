@@ -28,61 +28,6 @@ app.use(cors());
 app.use(logger("combined"));
 app.use(express.json());
 
-// 게시물 등록
-app.post("/posts", async (req, res) => {
-  console.log(req.body);
-  const { userid, title, content, imageurl } = req.body;
-
-  await appDataSource.query(
-    `
-            INSERT INTO posts(
-                user_id,
-                title,
-                content,
-                imageurl
-            ) VALUES (
-                ?,
-                ?,
-                ?,
-                ?
-            )`,
-    [userid, title, content, imageurl]
-  );
-  res.status(201).json({ message: "postCreated" });
-});
-
-// 전체 게시물 조회
-app.get("/viewAllPosts", async (req, res) => {
-  const viewAllPosts = await appDataSource.query(`
-              SELECT posts.user_id userID
-              , users.profile_image userProfileImage
-              , posts.id postingId
-              , posts.imageurl postingImageUrl
-              , posts.content postingContent
-              FROM users, posts
-              WHERE users.id = posts.user_id;
-          `);
-  res.json({ data: viewAllPosts });
-});
-
-// 유저 게시물 조회
-app.get("/viewUserPosts", async (req, res) => {
-  const viewUserPosts = await appDataSource.query(`
-              SELECT users.id userId 
-              , users.profile_image userProfileImage
-              , JSON_ARRAY (
-                JSON_OBJECT (
-                    'postingId', posts.id
-                    , 'postingImageUrl', posts.imageurl
-                    , 'postingContent', posts.content
-                )
-              ) postings
-              FROM users
-              JOIN posts ON users.id = posts.user_id;
-          `);
-  const users = res.json({ data: viewUserPosts });
-});
-
 // 게시물 수정
 app.patch("/modifyPost/:postId", async (req, res) => {
   const { content, userId } = req.body;
