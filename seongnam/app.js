@@ -25,32 +25,33 @@ appDataSource.initialize()
     appDataSource.destroy();
     })
 
-const port = process.env.TYPEORM_PORT;
+const port = process.env.PORT;
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
-app.post("/join", async(req,res) =>{
+app.post("/users/signup", async(req,res) =>{
     try{
         const data = req.body;
-        console.log(data)
         const insertQuery = `INSERT INTO users (
             name,
+            email,
             password
             ) 
         VALUES (
             ?, 
+            ?,
             ?
         )`;
-        const appData = [ data.name, data.password ];
+        const appData = [ data.name, data.email, data.password ];
         const result = await appDataSource.query(insertQuery, appData);
         res.status(201).json(result);
     }catch(error){
         console.error("Error executing SQL query:", error);
-        res.status(500).json({ message: "Error saving data" });
+        res.status(400).json({ message: "Error saving data" });
     }
 })
 
-app.listen(3000, function () {
-    'listening on port 3000'
+app.listen(port, function () {
+    `listening on port ${port}`
     })
