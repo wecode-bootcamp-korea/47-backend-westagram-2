@@ -28,11 +28,9 @@ app.use(cors());
 app.use(logger("combined"));
 app.use(express.json());
 
-// 게시물 수정
 app.patch("/modifyPost/:postId", async (req, res) => {
   const { content, userId } = req.body;
   const { postId } = req.params;
-
   await appDataSource.query(
     `
     UPDATE posts
@@ -41,7 +39,6 @@ app.patch("/modifyPost/:postId", async (req, res) => {
   `,
     [content, userId, postId]
   );
-
   const modifyPost = await appDataSource.query(`
     SELECT users.id userId
     , users.name userName
@@ -53,7 +50,6 @@ app.patch("/modifyPost/:postId", async (req, res) => {
     WHERE users.id = ${userId}
     AND posts.id = ${postId};
   `);
-
   res.status(201).json({ data: modifyPost });
 });
 
