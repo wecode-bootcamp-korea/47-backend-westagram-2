@@ -49,7 +49,7 @@ app.post("/users", async function (req, res) {
 });
 
 app.post("/posts", async (req, res) => {
-  const { content, user_id } = req.body;
+  const { content, userId } = req.body;
   await appDataSource.query(
     `
         INSERT INTO posts(
@@ -59,13 +59,13 @@ app.post("/posts", async (req, res) => {
         ?,
         ?
       )`,
-    [content, user_id]
+    [content, userId]
   );
   res.status(201).json({ message: "SUCCESS_CREATE_POST" });
 });
 
-app.get("/getAllPosts", async (req, res) => {
-  const getAllPosts = await appDataSource.query(`
+app.get("/posts", async (req, res) => {
+  const posts = await appDataSource.query(`
       SELECT     
       users.id,
       users.profile_image AS userProfileImage,
@@ -76,12 +76,12 @@ app.get("/getAllPosts", async (req, res) => {
       users, posts
       WHERE 
       users.id = posts.user_id`);
-  res.status(200).json({ data: getAllPosts });
+  res.status(200).json({ data: posts });
 });
 
-app.get("/getPostsByUserId/:id", async (req, res) => {
-  const userId = req.params.id;
-  const getPostsByUserId = await appDataSource.query(
+app.get("/users/:userId/posts", async (req, res) => {
+  const userId = req.params.userId;
+  const usersPosts = await appDataSource.query(
     `
       SELECT
       users.id AS userId,
@@ -101,7 +101,7 @@ app.get("/getPostsByUserId/:id", async (req, res) => {
       users.id = ?;`,
     [userId]
   );
-  res.status(200).json({ data: getPostsByUserId });
+  res.status(200).json({ data: usersPosts });
 });
 
 app.listen(3000, function () {
