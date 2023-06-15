@@ -42,14 +42,7 @@ app.post("/users", async function (req, res) {
       profile_image,
       password,
       phone_number
-    ) VALUES (
-      ?,
-      ?,
-      ?,
-      ?,
-      ?
-    )
-  `,
+    ) VALUES (?, ?, ?, ?, ?)`,
     [name, email, profileImage, password, phoneNumber]
   );
   res.status(201).json({ message: "SUCCESS_CREATE_USER" });
@@ -79,8 +72,10 @@ app.get("/getAllPosts", async (req, res) => {
       posts.id AS postingId,
       posts.post_image_url AS postingImageUrl,
       posts.content AS postingContent      
-      FROM users, posts
-      WHERE users.id = posts.user_id`);
+      FROM 
+      users, posts
+      WHERE 
+      users.id = posts.user_id`);
   res.status(200).json({ data: getAllPosts });
 });
 
