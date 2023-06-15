@@ -83,6 +83,35 @@ app.get("/viewUserPosts", async (req, res) => {
   const users = res.json({ data: viewUserPosts });
 });
 
+// 게시물 수정
+app.patch("/modifyPost/:postId", async (req, res) => {
+  const { content, userId } = req.body;
+  const { postId } = req.params;
+
+  await appDataSource.query(
+    `
+    UPDATE posts
+    SET content = ?
+    WHERE user_id = ? AND id = ? ;
+  `,
+    [content, userId, postId]
+  );
+
+  const modifyPost = await appDataSource.query(`
+    SELECT users.id userId
+    , users.name userName
+    , posts.id postingId
+    , posts.title postingTitle
+    , posts.content postingContent
+    FROM users
+    JOIN posts ON users.id = posts.user_id
+    WHERE users.id = ${userId}
+    AND posts.id = ${postId};
+  `);
+
+  res.status(201).json({ data: modifyPost });
+});
+
 app.listen(3000, () => {
   console.log("server listening on port 3000");
 });
