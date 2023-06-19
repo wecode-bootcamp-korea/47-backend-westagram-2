@@ -6,28 +6,28 @@ const Upload = async (userId, title, content, imageUrl) => {
 };
 
 const All = async () => {
-  const AllPostResult = await postDao.viewAllPost();
-  return AllPostResult;
+  const AllPost = await postDao.viewAllPost();
+  return AllPost;
 };
 
-const User = async () => {
-  const UserPostResult = await postDao.viewUserPost();
-  return UserPostResult;
+const User = async (userId) => {
+  const UserPost = await postDao.viewUserPost(userId);
+  return UserPost;
 };
 
 const Modify = async (content, userId, postId) => {
-  const ModifyPostResult = await postDao.ModifyPost(content, userId, postId);
-  return ModifyPostResult;
+  const ModifyPost = await postDao.ModifyPost(content, userId, postId);
+  return ModifyPost;
 };
 
 const Delete = async (postId) => {
-  const DeletePostResult = await postDao.DeletePost(postId);
-  return DeletePostResult;
+  const DeletePost = await postDao.DeletePost(postId);
+  return DeletePost;
 };
 
 const Like = async (postId, userId) => {
-  const LikePostResult = await postDao.LikePost(postId, userId);
-  return LikePostResult;
+  const LikePost = await postDao.LikePost(postId, userId);
+  return LikePost;
 };
 
 module.exports = { Upload, All, User, Modify, Delete, Like };

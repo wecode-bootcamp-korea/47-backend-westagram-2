@@ -3,10 +3,6 @@ const postService = require("../services/postService");
 
 const Upload = async (req, res) => {
   const { userId, title, content, imageUrl } = req.body;
-  if (!userId || !title || !content || !imageUrl) {
-    return res.status(400).json({ message: "KEY_ERROR" });
-  }
-
   await postService.Upload(userId, title, content, imageUrl);
   return res.status(201).json({ message: "UPLOAD_POST_SUCCESS" });
 };
@@ -17,7 +13,9 @@ const All = async (req, res) => {
 };
 
 const User = async (req, res) => {
-  const viewUserPost = await postService.User();
+  const { userId } = req.params;
+
+  const viewUserPost = await postService.User(userId);
   return res.status(200).json({ data: viewUserPost });
 };
 
@@ -25,8 +23,8 @@ const Modify = async (req, res) => {
   const { content, userId } = req.body;
   const { postId } = req.params;
 
-  await postService.Modify(content, userId, postId);
-  return res.status(201).json({ message: "MODIFY_POST_SUCCESS" });
+  const modifydata = await postService.Modify(content, userId, postId);
+  return res.status(201).json({ data: modifydata });
 };
 
 const Delete = async (req, res) => {

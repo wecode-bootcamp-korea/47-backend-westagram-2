@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post("/upload", postController.Upload);
 router.get("/all", postController.All);
-router.get("/user", postController.User);
+router.get("/user/:userId", postController.User);
 router.patch("/modify/:postId", postController.Modify);
 router.delete("/delete/:postId", postController.Delete);
 router.post("/like/:postId", postController.Like);

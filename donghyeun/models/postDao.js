@@ -51,7 +51,7 @@ const viewAllPost = async () => {
   return AllPostResult;
 };
 
-const viewUserPost = async () => {
+const viewUserPost = async (userId) => {
   const UserPostResult = await appDataSource.query(`
   SELECT users.id userId
   , users.profile_image userProfileImage
@@ -63,7 +63,8 @@ const viewUserPost = async () => {
     )
   ) postings
   FROM users
-  JOIN posts ON users.id = posts.user_id;
+  JOIN posts ON users.id = posts.user_id
+  WHERE users.id = ${userId};
 `);
   return UserPostResult;
 };
@@ -77,6 +78,22 @@ const ModifyPost = async (content, userId, postId) => {
   `,
     [content, userId]
   );
+
+  const modifypost = await appDataSource.query(
+    `
+    SELECT users.id userId
+    , users.name userName
+    , posts.id postingId
+    , posts.title postingTitle
+    , posts.content postingContent
+    FROM users
+    JOIN posts ON users.id = posts.user_id
+    WHERE users.id = ?
+    AND posts.id = ?
+  `,
+    [userId, postId]
+  );
+  return modifypost;
 };
 
 const DeletePost = async (postId) => {
