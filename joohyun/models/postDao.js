@@ -1,8 +1,7 @@
-
-const appDataSource = require('./dataSource');
+const dataSource = require("./dataSource");
 
 const createPosts = async (title, content, userId) => {
-  await appDataSource.query(
+  await dataSource.appDataSource.query(
     ` INSERT INTO posts(
         title,
         content,
@@ -13,7 +12,7 @@ const createPosts = async (title, content, userId) => {
 };
 
 const getPosts = async () => {
-  const getPostsResult = await appDataSource.query(
+  const getPostsResult = await dataSource.appDataSource.query(
     ` SELECT 
     users.id,
     users.profile_image AS userProfileImage,
@@ -29,7 +28,7 @@ const getPosts = async () => {
 };
 
 const modifyPosts = async (title, content, postId) => {
-  await appDataSource.query(
+  await dataSource.appDataSource.query(
     `
     UPDATE 
      posts
@@ -41,7 +40,7 @@ const modifyPosts = async (title, content, postId) => {
   `,
     [title, content, postId]
   );
-  const selectResult = await appDataSource.query(
+  const selectResult = await dataSource.appDataSource.query(
     `
     SELECT 
      users.id AS userId,
@@ -63,7 +62,7 @@ const modifyPosts = async (title, content, postId) => {
 };
 
 const deletePosts = async (postId) => {
-  const postsDelete = await appDataSource.query(
+  const postsDelete = await dataSource.appDataSource.query(
     `
     DELETE FROM posts
     WHERE id = ?;
@@ -74,7 +73,7 @@ const deletePosts = async (postId) => {
 };
 
 const postsLikes = async (userId, postId) => {
-  const personLikes = await appDataSource.query(
+  const personLikes = await dataSource.appDataSource.query(
     `
     INSERT INTO likes(
     user_id,
