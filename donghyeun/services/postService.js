@@ -8,27 +8,27 @@ const getAllPost = async () => {
   return await postDao.getAllPost();
 };
 
-const getUserPost = async (userId) => {
-  return await postDao.getUserPost(userId);
+const getPostById = async (userId) => {
+  return await postDao.getPostById(userId);
 };
 
-const modifyPost = async (content, userId, postId) => {
-  return await postDao.ModifyPost(content, userId, postId);
+const modifyPostById = async (content, userId, postId) => {
+  return await postDao.modifyPostById(content, userId, postId);
 };
 
-const deletePost = async (postId) => {
-  return await postDao.DeletePost(postId);
+const deletePostById = async (postId) => {
+  return await postDao.deletePostById(postId);
 };
 
-const likePost = async (postId, userId) => {
-  return await postDao.LikePost(postId, userId);
+const likePostById = async (postId, userId) => {
+  return await postDao.likePostById(postId, userId);
 };
 
 module.exports = {
   createPost,
   getAllPost,
-  getUserPost,
-  modifyPost,
-  deletePost,
-  likePost,
+  getPostById,
+  modifyPostById,
+  deletePostById,
+  likePostById,
 };

@@ -21,11 +21,11 @@ const createPost = async (userId, title, content, imageUrl) => {
 
 const getAllPost = async () => {
   const getAllPostResult = await appDataSource.query(`
-  SELECT posts.user_id userID
-  , users.profile_image userProfileImage
-  , posts.id postingId
-  , posts.imageurl postingImageUrl
-  , posts.content postingContent
+  SELECT posts.user_id userID,
+  users.profile_image userProfileImage,
+  posts.id postingId,
+  posts.imageurl postingImageUrl,
+  posts.content postingContent
   FROM users
   JOIN posts
   WHERE users.id = posts.user_id;
@@ -33,15 +33,15 @@ const getAllPost = async () => {
   return getAllPostResult;
 };
 
-const getUserPost = async (userId) => {
+const getPostById = async (userId) => {
   const getUserPostResult = await appDataSource.query(`
-  SELECT users.id userId
-  , users.profile_image userProfileImage
-  , JSON_ARRAY (
+  SELECT users.id userId,
+  users.profile_image userProfileImage,
+  JSON_ARRAY (
     JSON_OBJECT (
-      'postingId', posts.id
-      , 'postingImageUrl', posts.imageurl
-      , 'postingContent', posts.content
+      'postingId', posts.id,
+      'postingImageUrl', posts.imageurl,
+      'postingContent', posts.content
     )
   ) postings
   FROM users
@@ -51,7 +51,7 @@ const getUserPost = async (userId) => {
   return getUserPostResult;
 };
 
-const ModifyPost = async (content, userId, postId) => {
+const modifyPostById = async (content, userId, postId) => {
   await appDataSource.query(
     `
     UPDATE posts
@@ -61,13 +61,13 @@ const ModifyPost = async (content, userId, postId) => {
     [content, userId]
   );
 
-  const modifypost = await appDataSource.query(
+  const modifyPostResult = await appDataSource.query(
     `
-    SELECT users.id userId
-    , users.name userName
-    , posts.id postingId
-    , posts.title postingTitle
-    , posts.content postingContent
+    SELECT users.id userId,
+    users.name userName,
+    posts.id postingId,
+    posts.title postingTitle,
+    posts.content postingContent
     FROM users
     JOIN posts ON users.id = posts.user_id
     WHERE users.id = ?
@@ -75,10 +75,10 @@ const ModifyPost = async (content, userId, postId) => {
   `,
     [userId, postId]
   );
-  return modifypost;
+  return modifyPostResult;
 };
 
-const DeletePost = async (postId) => {
+const deletePostById = async (postId) => {
   await appDataSource.query(
     `
   DELETE FROM likes
@@ -94,12 +94,12 @@ const DeletePost = async (postId) => {
   );
 };
 
-const LikePost = async (postId, userId) => {
+const likePostById = async (postId, userId) => {
   await appDataSource.query(
     `
     INSERT INTO likes(
-      user_id
-      , post_id
+      user_id,
+      post_id
     ) VALUES (
       ?,
       ${postId}
@@ -112,8 +112,8 @@ const LikePost = async (postId, userId) => {
 module.exports = {
   createPost,
   getAllPost,
-  getUserPost,
-  ModifyPost,
-  DeletePost,
-  LikePost,
+  getPostById,
+  modifyPostById,
+  deletePostById,
+  likePostById,
 };

@@ -11,41 +11,41 @@ const getAllPost = async (req, res) => {
   return res.status(200).json({ data: viewAllPost });
 };
 
-const getUserPost = async (req, res) => {
+const getPostById = async (req, res) => {
   const { userId } = req.params;
 
-  const viewUserPost = await postService.getUserPost(userId);
-  return res.status(200).json({ data: viewUserPost });
+  const getPostById = await postService.getPostById(userId);
+  return res.status(200).json({ data: getPostById });
 };
 
-const modifyPost = async (req, res) => {
+const modifyPostById = async (req, res) => {
   const { content, userId } = req.body;
   const { postId } = req.params;
 
-  const modifydata = await postService.modifyPost(content, userId, postId);
+  const modifydata = await postService.modifyPostById(content, userId, postId);
   return res.status(201).json({ data: modifydata });
 };
 
-const deletePost = async (req, res) => {
+const deletePostById = async (req, res) => {
   const { postId } = req.params;
 
-  await postService.deletePost(postId);
+  await postService.deletePostById(postId);
   return res.status(204).json({ message: "DELETE_POST_SUCCESS" });
 };
 
-const likePost = async (req, res) => {
+const likePostById = async (req, res) => {
   const { postId } = req.params;
   const { userId } = req.body;
 
-  await postService.likePost(postId, userId);
+  await postService.likePostById(postId, userId);
   return res.status(201).json({ message: "LIKE_POST_SUCCESS" });
 };
 
 module.exports = {
   createPost,
   getAllPost,
-  getUserPost,
-  modifyPost,
-  deletePost,
-  likePost,
+  getPostById,
+  modifyPostById,
+  deletePostById,
+  likePostById,
 };

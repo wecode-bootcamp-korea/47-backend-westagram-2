@@ -5,9 +5,9 @@ const router = express.Router();
 
 router.post("", postController.createPost);
 router.get("/all", postController.getAllPost);
-router.get("/user/:userId", postController.getUserPost);
-router.patch("/:postId", postController.modifyPost);
-router.delete("/:postId", postController.deletePost);
-router.post("/like/:postId", postController.likePost);
+router.get("/user/:userId", postController.getPostById);
+router.patch("/:postId", postController.modifyPostById);
+router.delete("/:postId", postController.deletePostById);
+router.post("/like/:postId", postController.likePostById);
 
 module.exports = { router };
