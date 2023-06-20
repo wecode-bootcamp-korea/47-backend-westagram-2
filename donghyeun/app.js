@@ -28,59 +28,56 @@ app.use(cors());
 app.use(logger("combined"));
 app.use(express.json());
 
-app.post("/posts", async (req, res) => {
-  const { userid, title, content, imageurl } = req.body;
+app.patch("/posts/modify/:postId", async (req, res) => {
+  const { content, userId } = req.body;
+  const { postId } = req.params;
   await appDataSource.query(
     `
-            INSERT INTO posts(
-                user_id,
-                title,
-                content,
-                imageurl
-            ) VALUES (
-                ?,
-                ?,
-                ?,
-                ?
-            )`,
-    [userid, title, content, imageurl]
+    UPDATE posts
+    SET content = ?
+    WHERE user_id = ? AND id = ${postId} ;
+  `,
+    [content, userId]
   );
-  res.status(201).json({ message: "postCreated" });
+  const modifyPost = await appDataSource.query(`
+    SELECT users.id userId
+    , users.name userName
+    , posts.id postingId
+    , posts.title postingTitle
+    , posts.content postingContent
+    FROM users
+    JOIN posts ON users.id = posts.user_id
+    WHERE users.id = ${userId}
+    AND posts.id = ${postId};
+  `);
+  res.status(201).json({ data: modifyPost });
 });
 
-app.get("/posts/all", async (req, res) => {
-  const viewAllPosts = await appDataSource.query(`
-              SELECT posts.user_id userID
-              , users.profile_image userProfileImage
-              , posts.id postingId
-              , posts.imageurl postingImageUrl
-              , posts.content postingContent
-              FROM users, posts
-              WHERE users.id = posts.user_id;
-          `);
-  res.json({ data: viewAllPosts });
+app.delete("/posts/delete/:postId", async (req, res) => {
+  const { postId } = req.params;
+  await appDataSource.query(`
+    DELETE FROM posts
+    WHERE posts.id = ${postId}
+  `);
+  res.status(204).json({ message: "postingDeleted" });
 });
 
-app.get("/posts/user/:userId", async (req, res) => {
-  const { userId } = req.params;
-  const viewUserPosts = await appDataSource.query(
+app.post("/posts/likes/:postId", async (req, res) => {
+  const { postId } = req.params;
+  const { userId } = req.body;
+  await appDataSource.query(
     `
-              SELECT users.id userId 
-              , users.profile_image userProfileImage
-              , JSON_ARRAY (
-                JSON_OBJECT (
-                    'postingId', posts.id
-                    , 'postingImageUrl', posts.imageurl
-                    , 'postingContent', posts.content
-                )
-              ) postings
-              FROM users
-              JOIN posts ON users.id = posts.user_id
-              WHERE users.id = ${userId};
-          `,
+  INSERT INTO likes(
+    user_id
+    , post_id
+  ) VALUES (
+    ?,
+    ${postId}
+  );
+  `,
     [userId]
   );
-  const users = res.json({ data: viewUserPosts });
+  res.status(201).json({ message: "likeCreated" });
 });
 
 app.listen(3000, () => {
