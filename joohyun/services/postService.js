@@ -16,8 +16,8 @@ const deletePosts = async (postId) => {
   return await postDao.deletePosts(postId);
 };
 
-const postsLikes = async (userId, postId) => {
-  return await postDao.postsLikes(userId, postId);
+const createLikes = async (userId, postId) => {
+  return await postDao.createLikes(userId, postId);
 };
 
 module.exports = {
@@ -25,5 +25,5 @@ module.exports = {
   getPosts,
   modifyPosts,
   deletePosts,
-  postsLikes,
+  createLikes,
 };

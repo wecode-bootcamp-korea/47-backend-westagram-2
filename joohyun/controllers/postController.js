@@ -28,9 +28,9 @@ const deletePosts = async (req, res) => {
   return res.status(200).json({ message: "Successfully deleted" });
 };
 
-const postsLikes = async (req, res) => {
+const createLikes = async (req, res) => {
   const { userId, postId } = req.params;
-  await postService.postsLikes(userId, postId);
+  await postService.createLikes(userId, postId);
   return res.status(201).json({ message: "likes created" });
 };
 
@@ -39,5 +39,5 @@ module.exports = {
   getPosts,
   modifyPosts,
   deletePosts,
-  postsLikes,
+  createLikes,
 };

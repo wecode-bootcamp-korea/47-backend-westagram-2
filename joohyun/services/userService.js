@@ -1,7 +1,6 @@
 const userDao = require("../models/userDao");
 
 const signUp = async (name, email, password, profileImage, phoneNumber) => {
-  // password validation using REGEX
   const pwValidation = new RegExp(
     "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})"
   );
@@ -29,5 +28,5 @@ const getUserPosts = async (userId) => {
 
 module.exports = {
   signUp,
-  getUserPosts
+  getUserPosts,
 };

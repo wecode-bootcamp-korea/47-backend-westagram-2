@@ -1,4 +1,3 @@
-require("dotenv").config();
 const { DataSource } = require("typeorm");
 
 const appDataSource = new DataSource({
@@ -10,4 +9,4 @@ const appDataSource = new DataSource({
   database: process.env.TYPEORM_DATABASE,
 });
 
-module.exports = { appDataSource};
+module.exports = { appDataSource };
