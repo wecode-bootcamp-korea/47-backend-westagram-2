@@ -1,10 +1,11 @@
 //controller/dataController.js
 
+const { response } = require('express');
 const dataService = require('../services/dataService');
 
-const getDatass = async(req,res) =>{
+const getDataController = async(req,res) =>{
     try{
-        const result = await dataService.getDatas();
+        const result = await dataService.getDataService();
         return res.status(201).json({Data : result});
     }catch(err){
         console.error(err);
@@ -13,5 +14,5 @@ const getDatass = async(req,res) =>{
 };
 
 module.exports = {
-    getDatass
+    getDataController
 }

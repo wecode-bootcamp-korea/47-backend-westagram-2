@@ -4,7 +4,7 @@ const express = require('express');
 const dataController = require('../controllers/dataController');
 
 const router = express.Router();
-router.get('/getData',dataController.getDatass);
+router.get('',dataController.getDataController);
 module.exports = {
     router
 }

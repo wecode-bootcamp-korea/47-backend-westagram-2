@@ -1,17 +1,17 @@
 //service/fixDataService.js
 const fixDataDao = require('../models/fixDataDao');
 // fixDataDao.
-function fixDatas() {
+const fixDataService = (userId) => {
     try{
-    return fixDataDao.fixData();
+        return fixDataDao.fixDataDao(userId);
     }
 catch(err){
-    const error = new Error('INVALID_DATA_INPUT');
-    error.statusCode = 500;
-    throw error;
-    }
+        const error = new Error('INVALID_DATA_INPUT');
+        error.statusCode = 500;
+        throw error;
+        }
 }
 
 module.exports = {
-    fixDatas
+    fixDataService
 }

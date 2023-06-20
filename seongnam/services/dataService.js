@@ -1,9 +1,9 @@
 //service/dataService.js
 const dataDao = require('../models/dataDao');
 
-function getDatas() {
+function getDataService() {
     try{
-    return dataDao.getData()
+    return dataDao.getDataDao()
     }
 catch(err){
     const error = new Error('INVALID_DATA_INPUT');
@@ -12,5 +12,5 @@ catch(err){
     }
 }
 module.exports = {
-    getDatas
+    getDataService
 }

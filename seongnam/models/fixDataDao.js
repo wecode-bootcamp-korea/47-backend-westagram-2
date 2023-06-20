@@ -1,5 +1,4 @@
 //models/fixDataDao
-
 const { DataSource } = require('typeorm');
 const fixDatas = require('../controllers/fixDataController');
 const user_id = fixDatas.fixDatas2;
@@ -22,7 +21,7 @@ appDataSource.initialize()
     });
 
 
-const fixData = async () => {
+const fixDataDao = async (userId) => {
     try{
         const GroupByJoin = await appDataSource.query(
             `
@@ -43,7 +42,7 @@ const fixData = async () => {
                 users.id = ?
             GROUP BY
                 users.id, users.profile_image;
-            `,[user_id]);
+            `,[userId]);
         ;
         return GroupByJoin;
     }
@@ -54,5 +53,5 @@ const fixData = async () => {
     }
 }
 module.exports = {
-    fixData
+    fixDataDao
 }

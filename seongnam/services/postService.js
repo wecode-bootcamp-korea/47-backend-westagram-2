@@ -1,9 +1,8 @@
 //service/postService.js
 const postDao = require('../models/postDao')
 
-const postUp = async(content, user_id, postingImageUrl) => {
-    // password validation using REGEX
-    const createPost = await postDao.createPost(
+const postUpService = async(content, user_id, postingImageUrl) => {
+    const createPost = await postDao.createPostDao(
         content,
         user_id,
         postingImageUrl
@@ -12,5 +11,5 @@ const postUp = async(content, user_id, postingImageUrl) => {
 }
 
 module.exports = {
-    postUp
+    postUpService
 }

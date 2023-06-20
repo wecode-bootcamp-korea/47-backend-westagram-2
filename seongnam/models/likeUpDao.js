@@ -1,4 +1,4 @@
-//models/postDao
+//models/likeUpDao
 
 const { DataSource } = require('typeorm');
 const appDataSource = new DataSource({
@@ -18,17 +18,16 @@ appDataSource.initialize()
         console.log("Error during Data Source initialization!",err)
     appDataSource.destroy();
     });
-const createPostDao = async (content, user_id, postingImageUrl) => {
+const createLikeDao = async (user_id, post_id) => {
     try{
         return await appDataSource.query(
             `
-            INSERT INTO posts(
-                content,
+            INSERT INTO likes(
                 user_id,
-                postingImageUrl
-            ) VALUES (?,?,?);
+                post_id
+            ) VALUES (?,?);
             `,
-            [content,user_id,postingImageUrl]
+            [user_id, post_id]
         );
     }catch(err){
         const error = new Error('INVALID_DATA_INPUT');
@@ -37,5 +36,5 @@ const createPostDao = async (content, user_id, postingImageUrl) => {
     }
 }
 module.exports = {
-    createPostDao
+    createLikeDao
 }

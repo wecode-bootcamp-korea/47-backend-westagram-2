@@ -18,8 +18,7 @@ appDataSource.initialize()
         ("Error during Data Source initialization!",err)
     appDataSource.destroy();
     });
-// console.log(1);
-const getData = async () => {
+const getDataDao = async () => {
     try{
         const result = await appDataSource.query(
             `
@@ -40,7 +39,6 @@ const getData = async () => {
         throw error;
     }
 }
-// console.log(2);
 module.exports = {
-    getData
+    getDataDao
 }

@@ -1,6 +1,6 @@
-//models/postDao
-
+//models/fixDataDao
 const { DataSource } = require('typeorm');
+const fixDatas = require('../controllers/fixDataController');
 const appDataSource = new DataSource({
     type: process.env.TYPEORM_CONNECTION,
     host: process.env.TYPEORM_HOST,
@@ -18,24 +18,24 @@ appDataSource.initialize()
         console.log("Error during Data Source initialization!",err)
     appDataSource.destroy();
     });
-const createPostDao = async (content, user_id, postingImageUrl) => {
+
+
+const patchPostDao = async (content,user_id,postId) => {
     try{
-        return await appDataSource.query(
+        const patchPost = await appDataSource.query(
             `
-            INSERT INTO posts(
-                content,
-                user_id,
-                postingImageUrl
-            ) VALUES (?,?,?);
-            `,
-            [content,user_id,postingImageUrl]
-        );
-    }catch(err){
+            UPDATE posts SET content = ? , user_id =
+            ? WHERE id = ?;
+            `,[content, user_id, postId]);
+        ;
+        return patchPost;
+    }
+    catch(err){
         const error = new Error('INVALID_DATA_INPUT');
         error.statusCode = 500;
         throw error;
     }
 }
 module.exports = {
-    createPostDao
+    patchPostDao
 }

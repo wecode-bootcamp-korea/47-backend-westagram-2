@@ -2,9 +2,12 @@
 
 const fixDataService = require('../services/fixDataService');
 
-const fixDatas1 = async(req,res) =>{
+const fixDataController = async(req,res) =>{
     try{
-        const result = await fixDataService.fixDatas();
+        const userId = req.params.userId;
+        console.log("userId:",userId);
+        const [result] = await fixDataService.fixDataService(userId);
+
         return res.status(201).json({Data : result});
     }catch(err){
         console.error(err);
@@ -13,5 +16,5 @@ const fixDatas1 = async(req,res) =>{
 };
 
 module.exports = {
-    fixDatas1 
+    fixDataController
 }

@@ -17,7 +17,7 @@ appDataSource.initialize()
         console.log("Error during Data Source initialization!",err)
     appDataSource.destroy();
     });
-const createUser = async (name, email, password) => {
+const createUserDao = async (name, email, password) => {
     try{
         return await appDataSource.query(
             `
@@ -36,5 +36,5 @@ const createUser = async (name, email, password) => {
     }
 }
 module.exports = {
-    createUser
+    createUserDao
 }
