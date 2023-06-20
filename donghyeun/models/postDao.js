@@ -1,22 +1,4 @@
-const { DataSource } = require("typeorm");
-
-const appDataSource = new DataSource({
-  type: process.env.DB_CONNECTION,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-});
-
-appDataSource
-  .initialize()
-  .then(() => {
-    console.log("Data Source has been initialized!");
-  })
-  .catch((err) => {
-    console.error("Error during Data Source initialization:", err);
-  });
+const { appDataSource } = require("./dataSource");
 
 const createPost = async (userId, title, content, imageUrl) => {
   await appDataSource.query(
@@ -37,8 +19,8 @@ const createPost = async (userId, title, content, imageUrl) => {
   );
 };
 
-const viewAllPost = async () => {
-  const AllPostResult = await appDataSource.query(`
+const getAllPost = async () => {
+  const getAllPostResult = await appDataSource.query(`
   SELECT posts.user_id userID
   , users.profile_image userProfileImage
   , posts.id postingId
@@ -48,11 +30,11 @@ const viewAllPost = async () => {
   JOIN posts
   WHERE users.id = posts.user_id;
 `);
-  return AllPostResult;
+  return getAllPostResult;
 };
 
-const viewUserPost = async (userId) => {
-  const UserPostResult = await appDataSource.query(`
+const getUserPost = async (userId) => {
+  const getUserPostResult = await appDataSource.query(`
   SELECT users.id userId
   , users.profile_image userProfileImage
   , JSON_ARRAY (
@@ -66,7 +48,7 @@ const viewUserPost = async (userId) => {
   JOIN posts ON users.id = posts.user_id
   WHERE users.id = ${userId};
 `);
-  return UserPostResult;
+  return getUserPostResult;
 };
 
 const ModifyPost = async (content, userId, postId) => {
@@ -99,6 +81,13 @@ const ModifyPost = async (content, userId, postId) => {
 const DeletePost = async (postId) => {
   await appDataSource.query(
     `
+  DELETE FROM likes
+  WHERE post_id = ${postId}
+  `
+  );
+
+  await appDataSource.query(
+    `
     DELETE FROM posts
     WHERE posts.id = ${postId}
   `
@@ -122,8 +111,8 @@ const LikePost = async (postId, userId) => {
 
 module.exports = {
   createPost,
-  viewAllPost,
-  viewUserPost,
+  getAllPost,
+  getUserPost,
   ModifyPost,
   DeletePost,
   LikePost,

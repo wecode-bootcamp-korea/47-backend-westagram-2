@@ -1,33 +1,34 @@
 const postDao = require("../models/postDao");
 
-const Upload = async (userId, title, content, imageUrl) => {
-  const createPost = await postDao.createPost(userId, title, content, imageUrl);
-  return createPost;
+const createPost = async (userId, title, content, imageUrl) => {
+  return await postDao.createPost(userId, title, content, imageUrl);
 };
 
-const All = async () => {
-  const AllPost = await postDao.viewAllPost();
-  return AllPost;
+const getAllPost = async () => {
+  return await postDao.getAllPost();
 };
 
-const User = async (userId) => {
-  const UserPost = await postDao.viewUserPost(userId);
-  return UserPost;
+const getUserPost = async (userId) => {
+  return await postDao.getUserPost(userId);
 };
 
-const Modify = async (content, userId, postId) => {
-  const ModifyPost = await postDao.ModifyPost(content, userId, postId);
-  return ModifyPost;
+const modifyPost = async (content, userId, postId) => {
+  return await postDao.ModifyPost(content, userId, postId);
 };
 
-const Delete = async (postId) => {
-  const DeletePost = await postDao.DeletePost(postId);
-  return DeletePost;
+const deletePost = async (postId) => {
+  return await postDao.DeletePost(postId);
 };
 
-const Like = async (postId, userId) => {
-  const LikePost = await postDao.LikePost(postId, userId);
-  return LikePost;
+const likePost = async (postId, userId) => {
+  return await postDao.LikePost(postId, userId);
 };
 
-module.exports = { Upload, All, User, Modify, Delete, Like };
+module.exports = {
+  createPost,
+  getAllPost,
+  getUserPost,
+  modifyPost,
+  deletePost,
+  likePost,
+};

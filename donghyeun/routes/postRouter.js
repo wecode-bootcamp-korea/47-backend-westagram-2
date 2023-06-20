@@ -3,11 +3,11 @@ const postController = require("../controllers/postController");
 
 const router = express.Router();
 
-router.post("/upload", postController.Upload);
-router.get("/all", postController.All);
-router.get("/user/:userId", postController.User);
-router.patch("/modify/:postId", postController.Modify);
-router.delete("/delete/:postId", postController.Delete);
-router.post("/like/:postId", postController.Like);
+router.post("", postController.createPost);
+router.get("/all", postController.getAllPost);
+router.get("/user/:userId", postController.getUserPost);
+router.patch("/:postId", postController.modifyPost);
+router.delete("/:postId", postController.deletePost);
+router.post("/like/:postId", postController.likePost);
 
 module.exports = { router };
