@@ -1,122 +1,32 @@
-const dotenv = require("dotenv")
-dotenv.config()
 const express = require('express')
-const cors = require('cors')
-const morgan = require('morgan')
-const { DataSource } = require('typeorm');
+const http = require("http");
+const cors = require('cors');
+const morgan = require('morgan');
+require("dotenv").config();
+
+const routes = require("./routes");
 
 const app = express();
 
-const appDataSource = new DataSource({
-    type: process.env.TYPEORM_CONNECTION,
-    host: process.env.TYPEORM_HOST,
-    port: process.env.TYPEORM_PORT,
-    username: process.env.TYPEORM_USERNAME,
-    password: process.env.TYPEORM_PASSWORD,
-    database: process.env.TYPEORM_DATABASE
-})
-
-appDataSource.initialize()
-    .then(()=>{
-        console.log("Data Source has been initialized!")
-    })
-    .catch((err) => {
-        console.log("Error during Data Source initialization!",err)
-    appDataSource.destroy();
-    })
-
-const port = process.env.PORT;
 app.use(cors());
-app.use(morgan('dev'));
+app.use(morgan('combined'));
 app.use(express.json());
+app.use(routes);
 
-app.post("/users/signup", async(req,res) =>{
-    try{
-        const data = req.body;
-        const insertQuery = `INSERT INTO users (
-            name,
-            email,
-            password
-            ) 
-        VALUES (
-            ?, 
-            ?,
-            ?
-        )`;
-        const appData = [ data.name, data.email, data.password ];
-        const result = await appDataSource.query(insertQuery, appData);
-        res.status(201).json(result);
-    }catch(error){
-        console.error("Error executing SQL query:", error);
-        res.status(400).json({ message: "Error saving data" });
-    }
+app.get("/ping", (req,res) => {
+    res.json({message : "pong"});
 })
 
-app.post("/write",async(req,res) =>{
-    try{
-        const data = req.body;
-        if(
-            await appDataSource.query(`
-            SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)
-            `,[data.user_id])){
-            await appDataSource.query(`INSERT INTO posts (
-            content,
-            user_id
-            ) 
-        VALUES (
-            ?, 
-            ?
-        )`,
-        [data.content,data.user_id]);
-            res.status(201).json({message : "postCreated"});
-        }else{
-            res.status(201).json({message : "user_id is not exists"});
-        }
-        }catch(error){
-            console.error("Error executing SQL query:", error);
-            res.status(400).json({ message: "Error saving data" });
-        }
-    })
-app.get("/data", async(req,res) =>{   
-    try{
-    const InnerJoinQuery = `
-    SELECT users.id AS userId, 
-    users.profile_image AS userProfileImage, 
-    posts.id AS postingId, posts.postingImageUrl AS postingImageUrl, 
-    posts.content AS postingContent 
-    FROM users 
-    INNER JOIN posts 
-    ON users.id = posts.user_id
-    `
-    const result = await appDataSource.query(InnerJoinQuery);
-    res.status(201).json(result);
-    }catch(error){
-        console.error("Error executing SQL query:", error);
-        res.status(400).json({ message: "Error saving data" });
-    }
-});
+const server = http.createServer(app);
+const PORT = process.env.PORT;
 
-app.get("/userdata", async(req,res) => {
+const start = async () => {
     try{
-        const GroupByJoin = `
-        select users.id, 
-        users.profile_image, 
-        JSON_ARRAYAGG(JSON_OBJECT('postingId', posts.id, 
-        'postingImageUrl', posts.postingImageUrl, 
-        'postingContent', posts.content, 
-        'userId', posts.user_id)) 
-        AS postings
-        FROM users JOIN posts ON users.id = posts.user_id 
-        GROUP BY users.id, users.profile_image;
-        `
-        const result = await appDataSource.query(GroupByJoin);
-        res.status(201).json(result);
-    }catch(error){
-        console.error("Error executing SQL query:", error);
-        res.status(400).json({ message: "Error saving data" });
+        server.listen(PORT, () => console.log(`Server is listening on ${PORT}`))
+    }catch(err){
+        console.error(err);
     }
-})
+};
 
-app.listen(port, function () {
-    `listening on port ${port}`
-    })
+start();
+
