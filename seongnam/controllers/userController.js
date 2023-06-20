@@ -12,7 +12,7 @@ const signUpController = async(req,res) =>{
         return res.status(201).json({message : "SIGNUP_SUCCESS"});
     }catch(err){
         console.error(err);
-        return res.status(err.statusCode || 500).json({ message : err.message});
+        return res.status(err.statusCode || 400).json({ message : err.message});
     }
 };
 
