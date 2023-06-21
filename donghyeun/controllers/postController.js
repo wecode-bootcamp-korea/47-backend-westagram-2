@@ -2,6 +2,7 @@ const postService = require("../services/postService");
 
 const createPost = async (req, res) => {
   const { userId, title, content, imageUrl } = req.body;
+
   await postService.createPost(userId, title, content, imageUrl);
   return res.status(201).json({ message: "UPLOAD_POST_SUCCESS" });
 };
