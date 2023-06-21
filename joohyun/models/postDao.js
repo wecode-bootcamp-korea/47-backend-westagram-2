@@ -1,19 +1,25 @@
 const { appDataSource } = require("./dataSource");
 
 const createPosts = async (title, content, userId) => {
-  await appDataSource.query(
-    ` INSERT INTO posts(
+  try {
+    await appDataSource.query(
+      `INSERT INTO posts(
         title,
         content,
         user_id
       ) VALUES (?,?,?);`,
-    [title, content, userId]
-  );
+      [title, content, userId]
+    );
+  } catch (error) {
+    console.error("Error creating post");
+    throw error;
+  }
 };
 
 const getPosts = async () => {
-  const getPostsResult = await appDataSource.query(
-    ` SELECT 
+  try {
+    const getPostsResult = await appDataSource.query(
+      ` SELECT 
     users.id,
     users.profile_image AS userProfileImage,
     posts.id AS postingId,
@@ -23,13 +29,18 @@ const getPosts = async () => {
   users, posts
   WHERE
   users.id = posts.user_id`
-  );
-  return getPostsResult;
+    );
+    return getPostsResult;
+  } catch (error) {
+    console.error("Error retrieving posts");
+    throw error;
+  }
 };
 
 const modifyPosts = async (title, content, postId) => {
-  await appDataSource.query(
-    `
+  try {
+    await appDataSource.query(
+      `
     UPDATE 
      posts
     SET 
@@ -38,10 +49,10 @@ const modifyPosts = async (title, content, postId) => {
     WHERE 
      id = ?;
   `,
-    [title, content, postId]
-  );
-  const selectResult = await appDataSource.query(
-    `
+      [title, content, postId]
+    );
+    const selectResult = await appDataSource.query(
+      `
     SELECT 
      users.id AS userId,
      users.name AS userName,
@@ -55,34 +66,47 @@ const modifyPosts = async (title, content, postId) => {
     WHERE 
      posts.id = ?;
   `,
-    [postId]
-  );
-  console.log(selectResult);
-  return selectResult;
+      [postId]
+    );
+    return selectResult;
+  } catch (error) {
+    console.error("Error modifying posts");
+    throw error;
+  }
 };
 
 const deletePosts = async (postId) => {
-  const postsDelete = await appDataSource.query(
-    `
+  try {
+    const postsDelete = await appDataSource.query(
+      `
     DELETE FROM posts
     WHERE id = ?;
   `,
-    [postId]
-  );
-  return postsDelete;
+      [postId]
+    );
+    return postsDelete;
+  } catch (error) {
+    console.error("Error deleting posts");
+    throw error;
+  }
 };
 
 const createLikes = async (userId, postId) => {
-  const personLikes = await appDataSource.query(
-    `
+  try {
+    const personLikes = await appDataSource.query(
+      `
     INSERT INTO likes(
     user_id,
     post_id
     )VALUES(?,?)
   `,
-    [userId, postId]
-  );
-  return personLikes;
+      [userId, postId]
+    );
+    return personLikes;
+  } catch (error) {
+    console.error("Error Creating Likes");
+    throw error;
+  }
 };
 
 module.exports = {

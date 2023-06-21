@@ -1,8 +1,9 @@
 const { appDataSource } = require("./dataSource");
 
 const createUser = async (name, email, password, profileImage, phoneNumber) => {
-  const newUser = await appDataSource.query(
-    `INSERT INTO users(
+  try {
+    const newUser = await appDataSource.query(
+      `INSERT INTO users(
       name,
       email,
       password,
@@ -10,14 +11,19 @@ const createUser = async (name, email, password, profileImage, phoneNumber) => {
       phone_number
       ) VALUES (?, ?, ?, ?, ?);
      `,
-    [name, email, password, profileImage, phoneNumber]
-  );
-  return newUser;
+      [name, email, password, profileImage, phoneNumber]
+    );
+    return newUser;
+  } catch (error) {
+    console.error("Error Creating User");
+    throw error;
+  }
 };
 
 const getUserPosts = async (userId) => {
-  const userPosts = await appDataSource.query(
-    `
+  try {
+    const userPosts = await appDataSource.query(
+      `
     SELECT
       users.id AS userId,
       users.profile_image AS userProfileImage,
@@ -35,10 +41,13 @@ const getUserPosts = async (userId) => {
     WHERE
       users.id = ?;
     `,
-    [userId]
-  );
-
-  return userPosts;
+      [userId]
+    );
+    return userPosts;
+  } catch (error) {
+    console.error("Error Getting User Posts");
+    throw error;
+  }
 };
 
 module.exports = {
