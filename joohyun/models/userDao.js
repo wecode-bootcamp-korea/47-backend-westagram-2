@@ -50,7 +50,45 @@ const getUserPosts = async (userId) => {
   }
 };
 
+const userLogin = async (email, password) => {
+  try {
+    const user = await getUserByEmail(email);
+
+    if (!user) {
+      return { status: 401, data: { error: "Invalid email or password" } };
+    }
+
+    const passwordMatch = bcrypt.compareSync(password, user.password);
+
+    if (!passwordMatch) {
+      return { status: 401, data: { error: "Invalid email or password" } };
+    }
+
+    const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: "1d" });
+
+    return { status: 200, data: { token, message: "Login successful" } };
+  } catch (error) {
+    return { status: 500, data: { error: "Internal Server Error" } };
+  }
+};
+
+const getUserByEmail = async (email) => {
+  return new Promise((resolve, reject) => {
+    const query = "SELECT * FROM users WHERE email = ?";
+    connection.query(query, [email], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results[0]); // 첫 번째 사용자 결과 반환
+      }
+    });
+  });
+};
+
+// const userLogin = async (email, password) => {
+
 module.exports = {
   createUser,
   getUserPosts,
+  userLogin,
 };

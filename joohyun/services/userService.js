@@ -1,5 +1,6 @@
 const userDao = require("../models/userDao");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken")
 
 const signUp = async (name, email, password, profileImage, phoneNumber) => {
   const pwValidation = new RegExp(
@@ -20,7 +21,11 @@ const signUp = async (name, email, password, profileImage, phoneNumber) => {
     profileImage,
     phoneNumber
   );
-  return createUser;
+  const payload = { userId: createUser.id }; 
+  const secretKey = "pcwnpcwn123123"; 
+  const expiresIn = "1d"; 
+  const token = jwt.sign(payload, secretKey, { expiresIn });
+   return { user: createUser, token };
 };
 
 const makeHash = async (password, saltRounds) => {
@@ -31,7 +36,12 @@ const getUserPosts = async (userId) => {
   return await userDao.getUserPosts(userId);
 };
 
+const userLogin = async (email, password) =>{
+  return await userDao.userLogin(email, password);
+};
+
 module.exports = {
   signUp,
   getUserPosts,
+  userLogin
 };
