@@ -1,14 +1,8 @@
 const { appDataSource } = require("./dataSource");
 
-const createUser = async (
-  name,
-  email,
-  hashedPassword,
-  phoneNumber,
-  profileImage
-) => {
-  return await appDataSource.query(
-    `
+const createUser = async (name, email, hashedPassword, phoneNumber, profileImage) => {
+    return await appDataSource.query(
+        `
     INSERT INTO users(
         name,
         email,
@@ -23,8 +17,8 @@ const createUser = async (
         ?
       );
     `,
-    [name, email, hashedPassword, phoneNumber, profileImage]
-  );
+        [name, email, hashedPassword, phoneNumber, profileImage]
+    );
 };
 
 module.exports = { createUser };
