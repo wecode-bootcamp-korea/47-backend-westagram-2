@@ -1,4 +1,6 @@
 const { appDataSource } = require("./dataSource");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const createUser = async (name, email, password, profileImage, phoneNumber) => {
   try {
@@ -50,7 +52,22 @@ const getUserPosts = async (userId) => {
   }
 };
 
+const userLogin = async (email) => {
+  try {
+    const user = await appDataSource.query(
+      `SELECT email, password FROM users
+      WHERE email = ?`,
+      [email]
+    );
+    return user;
+  } catch (error) {
+    console.error("Error", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createUser,
   getUserPosts,
+  userLogin,
 };

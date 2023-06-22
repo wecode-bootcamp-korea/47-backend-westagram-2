@@ -23,7 +23,27 @@ const getUserPosts = async (req, res) => {
   return res.status(200).json({ data: posts });
 };
 
+const userLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await userService.userLogin(email, password);
+    
+    res.status(200).json({
+      success: true,
+      message: 'Login successful',
+      user
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({
+      success: false,
+      message: 'Invalid email or password',
+    });
+  }
+}
+
 module.exports = {
   signUp,
   getUserPosts,
+  userLogin,
 };

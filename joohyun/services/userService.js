@@ -1,4 +1,6 @@
 const userDao = require("../models/userDao");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const signUp = async (name, email, password, profileImage, phoneNumber) => {
   const pwValidation = new RegExp(
@@ -10,23 +12,48 @@ const signUp = async (name, email, password, profileImage, phoneNumber) => {
     err.statusCode = 409;
     throw err;
   }
-
+  const saltRounds = 12;
+  const hashedPassword = await makeHash(password, saltRounds);
   const createUser = await userDao.createUser(
     name,
     email,
-    password,
+    hashedPassword,
     profileImage,
     phoneNumber
   );
+  const payload = { userId: createUser.id };
+  const secretKey = "pcwnpcwn123123";
+  const expiresIn = "1d";
+  const token = jwt.sign(payload, secretKey, { expiresIn });
+  return { user: createUser, token };
+};
 
-  return createUser;
+const makeHash = async (password, saltRounds) => {
+  return await bcrypt.hash(password, saltRounds);
 };
 
 const getUserPosts = async (userId) => {
   return await userDao.getUserPosts(userId);
 };
 
+const userLogin = async (email, password) => {
+  try {
+    const user = await userDao.userLogin(email);
+    if (!user || user.length === 0) {
+      throw new Error("No user found");
+    }
+    const isMatch = await bcrypt.compare(password, user[0].password);
+    if (!isMatch) {
+      throw new Error("Invalid email or password");
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 module.exports = {
   signUp,
   getUserPosts,
+  userLogin,
 };

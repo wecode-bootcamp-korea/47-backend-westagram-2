@@ -1,8 +1,8 @@
-require("dotenv").config()
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const {appDataSource} = require("./models/dataSource")
+const { appDataSource } = require("./models/dataSource");
 const routes = require("./routes");
 const app = express();
 
@@ -29,4 +29,3 @@ app.listen(PORT, () => {
     });
   console.log(`Server is listening on ${PORT}`);
 });
-
