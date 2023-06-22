@@ -21,4 +21,15 @@ const createUser = async (name, email, hashedPassword, phoneNumber, profileImage
     );
 };
 
-module.exports = { createUser };
+const userPassword = async (email) => {
+    return await appDataSource.query(
+        `
+  SELECT password
+  FROM users
+  WHERE email = ?
+  `,
+        [email]
+    );
+};
+
+module.exports = { createUser, userPassword };

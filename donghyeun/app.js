@@ -15,18 +15,18 @@ app.use(express.json());
 app.use(routes);
 
 app.get("/ping", (req, res) => {
-  res.json({ message: "pong" });
+    res.json({ message: "pong" });
 });
 
 app.listen("3000", () => {
-  appDataSource
-    .initialize()
-    .then(() => {
-      console.log("Data Source has been initialized!");
-    })
-    .catch((err) => {
-      console.error("Error occurred during Data Source initialization", err);
-      myDataSource.destroy();
-    });
-  console.log(`Server is listening on 3000`);
+    appDataSource
+        .initialize()
+        .then(() => {
+            console.log("Data Source has been initialized!");
+        })
+        .catch((err) => {
+            console.error("Error occurred during Data Source initialization", err);
+            myDataSource.destroy();
+        });
+    console.log(`Server is listening on 3000`);
 });

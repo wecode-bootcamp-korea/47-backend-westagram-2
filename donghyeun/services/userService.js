@@ -3,8 +3,6 @@ const userDao = require("../models/userDao");
 
 const bcrypt = require("bcrypt");
 
-const { use } = require("../routes");
-
 const signUp = async (name, email, password, phoneNumber, profileImage) => {
     const pwValidation = new RegExp("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})");
 
@@ -24,6 +22,25 @@ const signUp = async (name, email, password, phoneNumber, profileImage) => {
     return await userDao.createUser(name, email, hashedPassword, phoneNumber, profileImage);
 };
 
-const signIn = async (email, password) => {};
+const signIn = async (email, password) => {
+    const userPasswordResult = await userDao.userPassword(email);
+
+    if (userPasswordResult.length > 0) {
+        const userPassword = userPasswordResult[0].password;
+
+        const passwordMatch = await bcrypt.compare(password, userPassword);
+
+        if (!passwordMatch) {
+            const err = new Error("Invalid User");
+            err.statusCode = 401;
+            throw err;
+        }
+        return;
+    } else {
+        const err = new Error("NOT_USER_FOUND");
+        err.statusCode = 404;
+        throw err;
+    }
+};
 
 module.exports = { signUp, signIn };

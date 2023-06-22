@@ -13,7 +13,6 @@ const signUp = async (req, res) => {
             message: "SIGNUP_SUCCESS",
         });
     } catch (err) {
-        console.log(err);
         return res.status(err.statusCode || 500).json({ message: err.message });
     }
 };
@@ -25,10 +24,11 @@ const signIn = async (req, res) => {
         return res.status(400).json({ message: "KEY_ERROR" });
     }
 
-    const userEmail = await userService.userEmail(email);
-
-    if (!userEmail) {
-        return res.status(401).json({ message: "Invalid User" });
+    try {
+        await userService.signIn(email, password);
+        return res.status(200).json({ message: "SIGNIN_SUCCESS" });
+    } catch (err) {
+        return res.status(err.statusCode || 500).json({ message: err.message });
     }
 };
 
